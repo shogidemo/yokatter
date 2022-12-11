@@ -1,0 +1,23 @@
+version: '3'							# docker-compose.ymlのフォーマットバージョン
+services:
+  db:
+    container_name: rails_db
+    image: postgres
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data  # Postgres のデータがコンテナ再作成で消えないようにする
+    environment:							# コンテナに設定する環境変数を定義しています。環境変数とはOS上で保持される変数のことで、ここで設定しているMYSQL_ROOT_PASSWORDは、postgreSQLのrootユーザのパスワードを設定するために使用しています。
+      - POSTGRES_PASSWORD=admin
+  web:
+    container_name: rails_web
+    build: .							# docker-compose.ymlと同じディレクトリにあるdockerファイルを元にイメージを作成して使用することを意味している。
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'	# コンテナを起動した時にデフォルトで実行されるコマンド。TailsのWebサーバを起動するコマンドを記載。
+    volumes:							# PC上のディレクトリをコンテナの/appディレクトリにマウント
+      - .:/webapp
+      - gems-volume:/usr/local/bundle # Gem がコンテナ再作成で消えないようにする
+    ports:
+      - 3000:3000							# コンテナの外部に3000番ポートを公開。コロンの左側がコンテナ外に公開するポート番号で、コロンから右側が、コンテナ内で転送されるポート番号になります。
+    depends_on:
+      - db								# Railsが起動する前にdbサービス、すなわちMySQLサーバが先に起動するように設定
+volumes:
+  postgres-volume:  # Postgres のデータがコンテナ再作成で消えないようにする
+  gems-volume:      # Gem がコンテナ再作成で消えないようにする
