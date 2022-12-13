@@ -1,0 +1,5 @@
+version: "3"
+services:
+  web:
+    volumes:
+      - .:/webapp:delegated # ホストとの同期オプションで を指定するとファイル読み書きが高速化するかもしれないので指定しておきます。
