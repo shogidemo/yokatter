@@ -10,7 +10,7 @@ services:
   web:
     container_name: rails_web
     build: .							# docker-compose.ymlと同じディレクトリにあるdockerファイルを元にイメージを作成して使用することを意味している。
-    command: bundle exec rails s -p 3000 -b '0.0.0.0'	# コンテナを起動した時にデフォルトで実行されるコマンド。RailsのWebサーバを起動するコマンドを記載。
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'	# コンテナを起動した時にデフォルトで実行されるコマンド。RailsのWebサーバを起動するコマンドを記載。
     volumes:							# PC上のディレクトリをコンテナの/appディレクトリにマウント
       - .:/webapp
       - gems-volume:/usr/local/bundle # Gem がコンテナ再作成で消えないようにする
